@@ -9,7 +9,7 @@ quizArray.push(quizQandA);
 // since push() seems to push objects as a pointer into the array,
 // have to reset quizQandA variable each time we want to put new values in it
 quizQandA = {};
-quizQandA.question =  "he condition in an if/else statement is enclosed with _______.";
+quizQandA.question =  "The condition in an if/else statement is enclosed with _______.";
 quizQandA.possibleAns =  ["quotes", "curly brackets", "parenthesis", "square brackets"];
 quizQandA.correctAns = "parenthesis";
 quizArray.push(quizQandA);
@@ -31,6 +31,7 @@ quizArray.push(quizQandA);
 
 var startQuizText = "Try to answer the following code related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by 10 seconds!";
 var quizLen = quizArray.length;
+var currentQuizQuestionNumber = 0;
 
 // get main content div for control of content
 var contentDivEl = document.querySelector(".content");
@@ -41,7 +42,11 @@ var divButtonsEl = document.querySelector("#buttons");
 // get div for any quiz responses
 var divResponseEl = document.querySelector("#response");
 
+
+// set initial start state for quiz
 createStartQuizContent();
+
+
 
 // clear all children from the divs defined in the <content> section
 function clearContentDivs() {
@@ -50,17 +55,24 @@ function clearContentDivs() {
     divResponseEl.innerHTML = "";
 }
 
-function startQuiz() {
-    for (var i = 0; i <quizLen; i++) {
+// ask quiz questions - checks global vars quizLen and currentQuizQuestionNumber
+// to make sure there are more questions to ask
+function runQuiz() {
+    clearContentDivs();
 
-        createQuizQuestionContent(quizArray[i])
-
+    // check to make sure there are more questions to ask
+    if (currentQuizQuestionNumber < quizLen) {
+        createQuizQuestionContent(quizArray[currentQuizQuestionNumber]);
     }
+    else {
+        // do highscore stuff here
+        window.alert("Done!");
+    } 
 }
 
 function createStartQuizContent() {
     // remove previous content
-    clearContentDivs();
+    // clearContentDivs();
 
     // Add quiz instructions and start button
     // add paragraph to the title div
@@ -76,12 +88,23 @@ function createStartQuizContent() {
     buttonEl.textContent = "Start Quiz";
     divButtonsEl.appendChild(buttonEl);
 
-    buttonEl.addEventListener("click", startQuiz);
+    buttonEl.addEventListener("click", runQuiz);
+}
+
+function handleQuizAnswerResponse(evt) {
+
+    // check answer against correct response
+    var answer = evt.currentTarget.textContent;
+    displayResponse(answer === quizArray[currentQuizQuestionNumber].correctAns);
+
+    // increment to next quiz question
+    currentQuizQuestionNumber++;
+    // wait a few moments (3 seconds) then run next quiz question
+    setTimeout(runQuiz, 3000);
 }
 
 function createQuizQuestionContent(qObject) {
 
-    clearContentDivs()
     // Add quiz instructions and start button
     // add paragraph to the title div
     var paragraphEl = document.createElement("p");
@@ -98,7 +121,7 @@ function createQuizQuestionContent(qObject) {
         buttonEl.textContent = qButtons[i];
         divButtonsEl.appendChild(buttonEl);
 
-        // buttonEl.addEventListener("click", startQuiz);
+        buttonEl.addEventListener("click", handleQuizAnswerResponse);
     }
     
 }
@@ -107,4 +130,17 @@ function createDoneContent() {
 }
 
 function createHighScoreContent() {
+}
+
+function displayResponse(correct) {
+
+    var h3El = document.createElement("h3");
+
+    if(correct) {
+        h3El.textContent = "Correct!"
+    }
+    else {
+        h3El.textContent = "Wrong!"
+    }
+    divResponseEl.appendChild(h3El);
 }
