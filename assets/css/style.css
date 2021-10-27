@@ -16,15 +16,18 @@ header h1 {
     font-size: 24px;
 }
 
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .content {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
-    
-/* button {
-} */
 
 #title {
     width: 50%;
@@ -33,5 +36,21 @@ header h1 {
     font-size: 28px;
 }
 
-/* #buttons {
-} */
+#buttons {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: left;
+    align-self: flex-start;
+    width: 100%; */
+}
+#buttons button {
+    margin: 5px;
+    padding: 10px;
+    color: white;
+    background-color: purple;
+    border-radius: 10px;
+    font-size: 20px;
+}
+#buttons button:hover {
+    background-color: rgb(182, 5, 182);
+}
