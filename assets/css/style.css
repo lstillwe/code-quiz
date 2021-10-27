@@ -54,3 +54,10 @@ main {
 #buttons button:hover {
     background-color: rgb(182, 5, 182);
 }
+
+#response h3 {
+    font-size: 28px;
+    color: grey;
+    border-top: solid 2px;
+    border-top-color: grey;
+}
