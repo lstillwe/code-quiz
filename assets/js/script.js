@@ -45,6 +45,12 @@ var divButtonsEl = document.querySelector("#buttons");
 // get div for any quiz responses
 var divResponseEl = document.querySelector("#response");
 
+// catch click of view scores link
+//$("#viewscores").onclick = createHighScoreContent;
+document.querySelector("#viewscores").addEventListener("click", function() {
+    createHighScoreContent([]);
+});
+
 
 // set initial start state for quiz
 createStartQuizContent();
@@ -58,10 +64,39 @@ function clearContentDivs() {
     divResponseEl.innerHTML = "";
 }
 
+// get highscores out of local storage
+function getHighscores() {
+
+    var highScores = localStorage.getItem("highScores");
+    if (highScores === null) {
+        highScores = [];
+    } else {
+        highScores = JSON.parse(highScores);
+    }
+
+    return highScores;
+}
+
+function clearHighScores() {
+
+    // remove high scores string from local storage
+    localStorage.removeItem("highScores");
+
+    // reload high scores content
+    createHighScoreContent();
+}
+
+function handleTimerEvent() {
+
+}
+
 // ask quiz questions - checks global vars quizLen and currentQuizQuestionNumber
 // to make sure there are more questions to ask
 function runQuiz() {
     clearContentDivs();
+
+    // start timer if this is the first question
+    setInterval(handleTimerEvent, 1000);
 
     // check to make sure there are more questions to ask
     if (currentQuizQuestionNumber < quizLen) {
@@ -69,14 +104,14 @@ function runQuiz() {
     }
     else {
         // do highscore stuff here
-        // window.alert("Done!");
         createDoneContent();
     } 
 }
 
 function createStartQuizContent() {
     // remove previous content
-    // clearContentDivs();
+    clearContentDivs();
+    currentQuizQuestionNumber = 0;
 
     // Add quiz instructions and start button
     // add paragraph to the title div
@@ -92,7 +127,7 @@ function createStartQuizContent() {
     buttonEl.textContent = "Start Quiz";
     divButtonsEl.appendChild(buttonEl);
 
-    // add event listsener for click event on each button
+    // add event listener for click event on each button
     buttonEl.addEventListener("click", runQuiz);
 }
 
@@ -104,7 +139,7 @@ function handleQuizAnswerResponse(event) {
 
     // increment to next quiz question
     currentQuizQuestionNumber++;
-    // wait a few moments (3 seconds) then run next quiz question
+    // wait a few moments (2 seconds) then run next quiz question
     setTimeout(runQuiz, 2000);
 }
 
@@ -126,21 +161,17 @@ function handleSubmitButtonClick(event) {
         }
 
         // retrieve previously saved high scores, if any
-        var highScores = localStorage.getItem("highScores");
-        if (highScores === null) {
-            highScores = [];
-        } else {
-            highScores = JSON.parse(highScores);
-        }
+        var highScores = getHighscores();
 
         // add this score to the list of scores
         highScores.push(finalScore);
         
         // save list back to local storage
+        var scoresStr = JSON.stringify(highScores);
+        localStorage.setItem("highScores", scoresStr);
 
         // go to high score content - param list of all scores
-
-        createHighScoreContent(highScores);
+        createHighScoreContent();
 
     }
 }
@@ -218,7 +249,8 @@ function createDoneContent() {
     formEl.addEventListener('submit', handleSubmitButtonClick);
 }
 
-function createHighScoreContent(scoreList) {
+// create content fot high scores view
+function createHighScoreContent() {
 
     clearContentDivs();
 
@@ -227,6 +259,18 @@ function createHighScoreContent(scoreList) {
     H1El.setAttribute("style",  "font: 28px bold;");
     H1El.textContent = "High Scores";
 
+    // retrieve high scores from local storage
+    scoreList = getHighscores();
+
+    // check and see if there are any scores first
+    // create and empty entry if not
+    if (scoreList.length === 0) {
+        var score = {
+            initials: "No scores have been saved yet",
+            score: ""
+        }
+        scoreList.push(score);
+    }
     // add high scores as list items
     var olEl = document.createElement("ol");
     for(var i=0; i< scoreList.length; i++) {
@@ -247,12 +291,17 @@ function createHighScoreContent(scoreList) {
     clearScoresButtonEl.textContent = "Clear High Scores";
     buttongrpEl.appendChild(clearScoresButtonEl);
 
-
+    // add created content to high level divs
     divTitleEl.appendChild(H1El);
     divTitleEl.appendChild(olEl);
     divButtonsEl.appendChild(buttongrpEl);
+
+    // finally add button event listeners
+    goBackButtonEl.addEventListener("click", createStartQuizContent);
+    clearScoresButtonEl.addEventListener("click", clearHighScores);
 }
 
+// show answer response - correct or wrong
 function displayResponse(correct) {
 
     var h3El = document.createElement("h3");
@@ -265,41 +314,3 @@ function displayResponse(correct) {
     }
     divResponseEl.appendChild(h3El);
 }
-
-
-/*<form method="POST">
-<div class="input-group">
-  <label for="initials">Enter initials</label>
-  <input type="text" name="initials" id="initials" placeholder="BBK" />
-</div>
-<button id="submit">Submit</button>
-</form> */
-
-
-
-// <form id="task-form">
-//   <div class="form-group">
-//     <input type="text" name="task-name" class="text-input" placeholder="Enter Task Name" />
-//   </div>
-//   <div class="form-group">
-//     <select name="task-type" class="select-dropdown">
-//       <option value="" disabled selected>Pick a task type</option>
-//       <option value="Print">Print</option>
-//       <option value="Web">Web</option>
-//       <option value="Mobile">Mobile</option>
-//     </select>
-//   </div>
-//   <div class="form-group">
-//     <button class="btn" id="save-task" type="submit">Add Task</button>
-//   </div>
-// </form>
-
-// var createTaskHandler = function(event) {
-
-//     event.preventDefault();
-  
-//     var listItemEl = document.createElement("li");
-//     listItemEl.className = "task-item";
-//     listItemEl.textContent = "This is a new task.";
-//     tasksToDoEl.appendChild(listItemEl);
-//   };
