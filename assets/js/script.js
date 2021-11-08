@@ -234,18 +234,22 @@ function createQuizQuestionContent(qObject) {
     paragraphEl.textContent = qObject.question;
     divTitleEl.appendChild(paragraphEl);
 
-    // add button to the buttons div
+    // create ordered list
+    var olEl = document.createElement("ol");
+    olEl.setAttribute("style", "padding-left: 0;");
+
+    // add li elements to the buttons div
     var qButtons = qObject.possibleAns;
     for (i=0; i< qButtons.length; i++) {
-        var buttonEl = document.createElement("button");
-        buttonEl.setAttribute("id",  "button" + i);
-        buttonEl.setAttribute("type",  "button");
-        buttonEl.textContent = qButtons[i];
-        divButtonsEl.appendChild(buttonEl);
+        var liEl = document.createElement("li");
+        liEl.setAttribute("id",  "button");
+        liEl.textContent = qButtons[i];
+        olEl.appendChild(liEl);
 
-        buttonEl.addEventListener("click", handleQuizAnswerResponse);
+        liEl.addEventListener("click", handleQuizAnswerResponse);
     }
-    
+
+    divButtonsEl.appendChild(olEl);
 }
 
 // create content for Done processing and add to title div
@@ -255,7 +259,7 @@ function createDoneContent() {
 
     // header stuff here
     var H1El = document.createElement("h1");
-    H1El.setAttribute("style",  "font: 28px bold;");
+    H1El.setAttribute("style",  "font-size: 28px;");
     H1El.textContent = "All Done!";
     var paragraphEl = document.createElement("p");
     paragraphEl.setAttribute("style",  "font-size: 24px;");
@@ -263,7 +267,7 @@ function createDoneContent() {
 
     // now do form stuff
     var formEl = document.createElement("form");
-    formEl.setAttribute("id", "task-form");
+    formEl.setAttribute("id", "form");
 
     // label and text input
     var formgrp1El = document.createElement("div");
@@ -307,7 +311,7 @@ function createHighScoreContent() {
 
     // header stuff here
     var H1El = document.createElement("h1");
-    H1El.setAttribute("style",  "font: 28px bold;");
+    H1El.setAttribute("style",  "font-size: 28px;");
     H1El.textContent = "High Scores";
 
     // retrieve high scores from local storage
@@ -324,6 +328,7 @@ function createHighScoreContent() {
     }
     // add high scores as list items
     var olEl = document.createElement("ol");
+    olEl.setAttribute("id", "score-ol");
     for(var i=0; i< scoreList.length; i++) {
         var liEl = document.createElement("li");
         liEl.textContent = scoreList[i].initials + " - " + scoreList[i].score;
@@ -335,10 +340,12 @@ function createHighScoreContent() {
     buttongrpEl.setAttribute("class", "buttongrp");
     var goBackButtonEl = document.createElement("button");
     goBackButtonEl.setAttribute("class", "btn");
+    goBackButtonEl.setAttribute("id", "go-back-btn");
     goBackButtonEl.textContent = "Go Back";
     buttongrpEl.appendChild(goBackButtonEl);
     var clearScoresButtonEl = document.createElement("button");
     clearScoresButtonEl.setAttribute("class", "btn");
+    clearScoresButtonEl.setAttribute("id", "clear-score-btn");
     clearScoresButtonEl.textContent = "Clear High Scores";
     buttongrpEl.appendChild(clearScoresButtonEl);
 
