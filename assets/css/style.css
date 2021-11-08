@@ -33,6 +33,10 @@ main {
     width: 75%;
     margin-top: 40px;
 }
+#title h1 {
+    font-size: 34px;
+    text-align: center;
+}
 #title-paragraph {
     font-size: 28px;
 }

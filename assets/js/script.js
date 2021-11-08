@@ -120,10 +120,14 @@ function createStartQuizContent() {
     timeLeft = quizTimeLen;
 
     // Add quiz instructions and start button
-    // add paragraph to the title div
+    // add header & paragraph to the title div
+    var h1El = document.createElement("h1");
+    h1El.textContent = "Coding Quiz Challenge";
+    h1El.setAttribute("id", "main-title");
     var paragraphEl = document.createElement("P");
     paragraphEl.setAttribute("id",  "title-paragraph");
     paragraphEl.textContent = startQuizText;
+    divTitleEl.appendChild(h1El);
     divTitleEl.appendChild(paragraphEl);
 
     // add button to the buttons div
