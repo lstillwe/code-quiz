@@ -1,0 +1,139 @@
+* {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+header a {
+    margin: 20px;
+    font-size: 24px;
+}
+header h1 {
+    margin: 20px;
+    font-size: 24px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#title {
+    width: 75%;
+    margin-top: 40px;
+}
+#title h1 {
+    font-size: 34px;
+    text-align: center;
+}
+#title-paragraph {
+    font-size: 28px;
+}
+
+#buttons {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    /* justify-content: left;
+    align-self: flex-start;
+    width: 100%; */
+}
+#buttons #start-button {
+    align-self: center;
+    margin: 5px;
+    padding: 10px;
+    color: white;
+    background-color: purple;
+    border-radius: 10px;
+    font-size: 20px;
+    width: 160px;
+}
+#buttons #start-button:hover {
+    background-color: rgb(182, 5, 182);
+}
+#buttons #button {
+    margin: 5px;
+    padding: 10px;
+    color: white;
+    background-color: purple;
+    border-radius: 10px;
+    font-size: 20px;
+    width: 200px;
+}
+#buttons #button:hover {
+    background-color: rgb(182, 5, 182);
+}
+
+#response {
+    width: 75%;
+}
+#response h3 {
+    font-size: 28px;
+    color: grey;
+    border-top: solid 2px;
+    border-top-color: grey;
+}
+
+#form {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    padding: 20px;
+}
+.form-group {
+    padding-top: 5px;
+}
+.form-group label {
+    font-size: 24px;
+    padding: 20px;
+}
+.form-group input {
+    font-size: 20px;
+    padding: 10px;
+}
+.form-group button {
+    font-size: 24px;
+    padding: 10px;
+    margin-left: 20px;;
+    color: white;
+    background-color: purple;
+    border-radius: 10px;
+    font-size: 20px;
+    width: 160px;
+}
+
+#score-ol {
+    font-size: 20px;
+    background-color: rgba(226, 121, 226, 0.918)
+}
+
+.buttongrp .btn {
+    font-size: 22px;
+    padding: 10px;
+    margin-left: 20px;
+    margin-top: 5px;
+    color: white;
+    background-color: purple;
+    border-radius: 10px;
+    font-size: 20px;
+}
+.buttongrp .btn:hover {
+    background-color: rgb(182, 5, 182);
+}
+.buttongrp #go-back-btn {
+    width: 150px;
+}
+.buttongrp #clear-score-btn {
+    width: 200px;
+}
