@@ -32,8 +32,9 @@ quizArray.push(quizQandA);
 var startQuizText = "Try to answer the following code related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by 10 seconds!";
 var quizLen = quizArray.length;
 var currentQuizQuestionNumber = 0;
-var score = 0;
-var timeLeft = 75;
+var interval = null;
+var quizTimeLen = 75;
+var timeLeft = 0;
 var penalty = 10;
 
 // get main content div for control of content
@@ -56,6 +57,29 @@ document.querySelector("#viewscores").addEventListener("click", function() {
 createStartQuizContent();
 
 
+// check to make sure there is still time remaining
+function checkTime() {
+
+    if (timeLeft <= 0) {
+        // Game is over - go to done screen
+        timeLeft = 0;
+        setCountdownValue(0);
+        createDoneContent();
+        clearInterval(interval);
+    }
+    setCountdownValue(timeLeft);
+}
+
+// handle the setInterval timer events
+function handleTimerEvent() {
+    timeLeft--;
+    checkTime();
+}
+
+// update the time value in the header of the page
+function setCountdownValue(theTime) {
+    countdownEl = document.querySelector("#countdown").textContent = "Time: " + theTime;
+}
 
 // clear all children from the divs defined in the <content> section
 function clearContentDivs() {
@@ -77,6 +101,7 @@ function getHighscores() {
     return highScores;
 }
 
+// clear all of the scores saved in local storage
 function clearHighScores() {
 
     // remove high scores string from local storage
@@ -86,32 +111,13 @@ function clearHighScores() {
     createHighScoreContent();
 }
 
-function handleTimerEvent() {
-
-}
-
-// ask quiz questions - checks global vars quizLen and currentQuizQuestionNumber
-// to make sure there are more questions to ask
-function runQuiz() {
-    clearContentDivs();
-
-    // start timer if this is the first question
-    setInterval(handleTimerEvent, 1000);
-
-    // check to make sure there are more questions to ask
-    if (currentQuizQuestionNumber < quizLen) {
-        createQuizQuestionContent(quizArray[currentQuizQuestionNumber]);
-    }
-    else {
-        // do highscore stuff here
-        createDoneContent();
-    } 
-}
-
+// create the elements for the 
 function createStartQuizContent() {
-    // remove previous content
+    // remove previous content and reset counters
     clearContentDivs();
     currentQuizQuestionNumber = 0;
+    setCountdownValue(0);
+    timeLeft = quizTimeLen;
 
     // Add quiz instructions and start button
     // add paragraph to the title div
@@ -131,6 +137,31 @@ function createStartQuizContent() {
     buttonEl.addEventListener("click", runQuiz);
 }
 
+// ask quiz questions - checks global vars quizLen and currentQuizQuestionNumber
+// to make sure there are more questions to ask
+function runQuiz() {
+    clearContentDivs();
+
+    // start timer if this is the first question
+    if (currentQuizQuestionNumber === 0) {
+        interval = setInterval(handleTimerEvent, 1000);
+        setCountdownValue(quizTimeLen);
+    }
+
+    // check to make sure there are more questions to ask
+    if (currentQuizQuestionNumber < quizLen) {
+        createQuizQuestionContent(quizArray[currentQuizQuestionNumber]);
+    }
+    else {
+        // stop timer
+        clearInterval(interval);
+        // do highscore stuff here
+        createDoneContent();
+    } 
+}
+
+// this function compares the users question response
+// to the correct response and displays correct or wrong
 function handleQuizAnswerResponse(event) {
 
     // check answer against correct response
@@ -143,6 +174,23 @@ function handleQuizAnswerResponse(event) {
     setTimeout(runQuiz, 2000);
 }
 
+// show answer response - correct or wrong
+function displayResponse(correct) {
+
+    var h3El = document.createElement("h3");
+
+    if(correct) {
+        h3El.textContent = "Correct!"
+    }
+    else {
+        h3El.textContent = "Wrong!"
+        // penalty!
+        timeLeft -= penalty;
+    }
+    divResponseEl.appendChild(h3El);
+}
+
+// this function handles the save high score form submit
 function handleSubmitButtonClick(event) {
 
     event.preventDefault();
@@ -176,6 +224,7 @@ function handleSubmitButtonClick(event) {
     }
 }
 
+// view for each question in the quiz
 function createQuizQuestionContent(qObject) {
 
     // Add quiz instructions and start button
@@ -202,13 +251,15 @@ function createQuizQuestionContent(qObject) {
 // create content for Done processing and add to title div
 function createDoneContent() {
 
+    clearContentDivs();
+
     // header stuff here
     var H1El = document.createElement("h1");
     H1El.setAttribute("style",  "font: 28px bold;");
     H1El.textContent = "All Done!";
     var paragraphEl = document.createElement("p");
     paragraphEl.setAttribute("style",  "font-size: 24px;");
-    paragraphEl.textContent = "Your final score is: " + score;
+    paragraphEl.textContent = "Your final score is: " + timeLeft;
 
     // now do form stuff
     var formEl = document.createElement("form");
@@ -249,7 +300,7 @@ function createDoneContent() {
     formEl.addEventListener('submit', handleSubmitButtonClick);
 }
 
-// create content fot high scores view
+// create content for high scores view
 function createHighScoreContent() {
 
     clearContentDivs();
@@ -299,18 +350,4 @@ function createHighScoreContent() {
     // finally add button event listeners
     goBackButtonEl.addEventListener("click", createStartQuizContent);
     clearScoresButtonEl.addEventListener("click", clearHighScores);
-}
-
-// show answer response - correct or wrong
-function displayResponse(correct) {
-
-    var h3El = document.createElement("h3");
-
-    if(correct) {
-        h3El.textContent = "Correct!"
-    }
-    else {
-        h3El.textContent = "Wrong!"
-    }
-    divResponseEl.appendChild(h3El);
 }
